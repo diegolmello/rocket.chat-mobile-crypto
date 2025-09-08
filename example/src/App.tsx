@@ -67,6 +67,13 @@ export default function App() {
         expected: 'boi+i61+rp2eEKoGEiQDT+1I0D8=',
       },
       {
+        key: 'pbkdf2-sha256-100k',
+        label:
+          'PBKDF2-SHA256 ("cGFzc3dvcmQ=", "c2FsdA==", 100000, 32) - High Iterations',
+        fn: () => pbkdf2Hash('cGFzc3dvcmQ=', 'c2FsdA==', 100000, 32, 'SHA256'), // "password", "salt", 100k iterations
+        expected: 'A5Si7eMyyaE+uC6bJGMWBMMd+Xi04vD70sVJlE+deaU=', // Expected value for 100k iterations
+      },
+      {
         key: 'hmac256-test1',
         label: 'HMAC-SHA256 (data="48656c6c6f", key="6b6579")', // "Hello", "key"
         fn: () => hmac256('48656c6c6f', '6b6579'),
@@ -491,6 +498,15 @@ export default function App() {
               {loading['pbkdf2-sha1']
                 ? 'Loading...'
                 : results['pbkdf2-sha1'] || 'Not run'}
+            </Text>
+
+            <Text style={styles.testLabel}>
+              PBKDF2-SHA256 (pwd="password", salt="salt", iter=100000, len=32):
+            </Text>
+            <Text style={styles.result}>
+              {loading['pbkdf2-sha256-100k']
+                ? 'Loading...'
+                : results['pbkdf2-sha256-100k'] || 'Not run'}
             </Text>
           </View>
 
