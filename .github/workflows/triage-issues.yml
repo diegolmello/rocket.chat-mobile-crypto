@@ -1,0 +1,32 @@
+name: Triage New Issues
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  ai-triage:
+    # Only run for bug reports (they have the 'bug' label auto-applied from the issue template)
+    if: contains(github.event.issue.labels.*.name, 'bug')
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write   # create comment & add/remove labels
+      contents: read  # read prompt files
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Run AI assessment
+        id: ai-assessment
+        uses: github/ai-assessment-comment-labeler@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue_number: ${{ github.event.issue.number }}
+          issue_body: ${{ github.event.issue.body }}
+          repo_name: ${{ github.event.repository.name }}
+          owner: ${{ github.repository_owner }}
+          ai_review_label: 'bug'
+          prompts_directory: '.github/prompts'
+          labels_to_prompts_mapping: 'bug,bug-triage.prompt.yml'
+          model: 'openai/gpt-4o-mini'
+          max_tokens: 300
